@@ -1,25 +1,56 @@
-import { useBlinkAuth } from '@blinkdotnew/react'
+import { useEffect } from 'react'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { EditorPage } from './pages/EditorPage'
-import { LandingPage } from './pages/LandingPage'
-import { Spinner } from './components/ui/spinner'
-import { blink } from './lib/blink'
+import { LoginPage } from './pages/LoginPage'
+import { useAuthStore } from './store/authStore'
+import { Loader2 } from 'lucide-react'
 
-function App() {
-  const { isAuthenticated, isLoading } = useBlinkAuth()
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, isLoading } = useAuthStore()
 
   if (isLoading) {
     return (
-      <div className="h-screen w-screen flex items-center justify-center bg-background">
-        <Spinner className="w-8 h-8 text-primary" />
+      <div className="h-screen flex items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <span className="text-sm text-muted-foreground">Loading...</span>
+        </div>
       </div>
     )
   }
 
   if (!isAuthenticated) {
-    return <LandingPage onLogin={() => blink.auth.login(window.location.href)} />
+    return <Navigate to="/login" replace />
   }
 
-  return <EditorPage />
+  return <>{children}</>
+}
+
+function App() {
+  const { checkAuth, isAuthenticated } = useAuthStore()
+
+  useEffect(() => {
+    checkAuth()
+  }, [])
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/login"
+          element={isAuthenticated ? <Navigate to="/" replace /> : <LoginPage />}
+        />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <EditorPage />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
+  )
 }
 
 export default App
