@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lora:ital,wght@0,400..700;1,400..700&family=IBM+Plex+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ⚠️ AGENT MUST REPLACE: These are placeholder colors. You MUST define a custom palette before writing components. */
+    /* The template uses distinctive placeholder colors to force customization - do NOT use these in production! */
+    
+    /* 
+     * EXAMPLE PALETTES (use as inspiration, replace with your own):
+     * 
+     * Modern SaaS (Business/Enterprise):
+     * --primary: 217 91% 60%;        (Blue #2563EB)
+     * --accent: 217 91% 65%;         (Lighter blue #3B82F6)
+     * 
+     * Bold Tech (Startups/Developer Tools):
+     * --primary: 262 83% 58%;        (Purple #8B5CF6)
+     * --accent: 262 83% 68%;         (Lighter purple #A855F7)
+     * 
+     * Quantum Rose (Creative/Design):
+     * --primary: 330 81% 50%;        (Pink #E6067A)
+     * --accent: 330 81% 70%;         (Lighter pink #F472B6)
+     * 
+     * Ocean Depth (Calm/Professional):
+     * --primary: 200 98% 39%;        (Deep teal #0D9488)
+     * --accent: 200 98% 50%;         (Teal #14B8A6)
+     * 
+     * Sunset Warmth (Friendly/Welcoming):
+     * --primary: 24 95% 53%;         (Orange #F97316)
+     * --accent: 24 95% 63%;          (Lighter orange #FB923C)
+     */
+    
+    /* Colors - REPLACE ALL VALUES BELOW with your custom palette */
+    --background: 0 0% 100%;
+    --foreground: 178 84% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 178 84% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 178 84% 10%;
+    /* ⚠️ PLACEHOLDER: Replace with your custom primary color (NOT green, NOT blue) */
+    --primary: 174 84% 31%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 171 77% 96%;
+    --secondary-foreground: 177 61% 19%;
+    --muted: 171 77% 96%;
+    --muted-foreground: 177 61% 19%;
+    /* ⚠️ PLACEHOLDER: Replace with your custom accent color */
+    --accent: 172 66% 50%;
+    --accent-foreground: 178 84% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 174 84% 90%;
+    --input: 174 84% 90%;
+    /* ⚠️ PLACEHOLDER: Replace with your custom ring color (usually matches primary) */
+    --ring: 174 84% 31%;
+
+    /* Charts - ⚠️ PLACEHOLDER: Replace with your custom chart colors */
+    --chart-1: 174 84% 31%;
+    --chart-2: 194 84% 31%;
+    --chart-3: 214 84% 31%;
+    --chart-4: 234 84% 31%;
+    --chart-5: 254 84% 31%;
+
+    /* Sidebar - ⚠️ PLACEHOLDER: Replace with your custom sidebar colors */
+    --sidebar: 171 77% 96%;
+    --sidebar-foreground: 178 84% 10%;
+    --sidebar-primary: 174 84% 31%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 172 66% 50%;
+    --sidebar-accent-foreground: 178 84% 10%;
+    --sidebar-border: 174 84% 90%;
+    --sidebar-ring: 174 84% 31%;
+
+    /* Fonts */
+    --font-sans: 'Geist', sans-serif;
+    --font-serif: 'Playfair Display', serif;
+    --font-mono: 'Geist Mono', monospace;
+
+    /* Shadows */
+    --shadow-2xs: 0px 4px 8px -1px hsl(0 0% 0% / 0.05);
+    --shadow-xs: 0px 4px 8px -1px hsl(0 0% 0% / 0.05);
+    --shadow-sm: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 1px 2px -2px hsl(0 0% 0% / 0.10);
+    --shadow: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 1px 2px -2px hsl(0 0% 0% / 0.10);
+    --shadow-md: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 2px 4px -2px hsl(0 0% 0% / 0.10);
+    --shadow-lg: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 4px 6px -2px hsl(0 0% 0% / 0.10);
+    --shadow-xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 8px 10px -2px hsl(0 0% 0% / 0.10);
+    --shadow-2xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.25);
+
+    /* Misc */
+    --tracking-normal: 0em;
+    --spacing: 0.25rem;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* ⚠️ AGENT MUST REPLACE: Dark mode colors - replace with your custom dark palette */
+    --background: 178 84% 5%;
+    --foreground: 0 0% 100%;
+    --card: 178 84% 5%;
+    --card-foreground: 0 0% 100%;
+    --popover: 178 84% 5%;
+    --popover-foreground: 0 0% 100%;
+    /* ⚠️ PLACEHOLDER: Replace with your custom dark mode primary color */
+    --primary: 174 84% 31%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 178 84% 10%;
+    --secondary-foreground: 172 66% 50%;
+    --muted: 178 84% 10%;
+    --muted-foreground: 172 66% 50%;
+    --accent: 172 66% 50%;
+    --accent-foreground: 178 84% 10%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 178 84% 15%;
+    --input: 178 84% 15%;
+    --ring: 174 84% 31%;
+
+    /* ⚠️ PLACEHOLDER: Replace with your custom dark mode chart colors */
+    --chart-1: 174 84% 31%;
+    --chart-2: 194 84% 31%;
+    --chart-3: 214 84% 31%;
+    --chart-4: 234 84% 31%;
+    --chart-5: 254 84% 31%;
+
+    /* ⚠️ PLACEHOLDER: Replace with your custom dark mode sidebar colors */
+    --sidebar: 178 84% 5%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 174 84% 31%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 172 66% 50%;
+    --sidebar-accent-foreground: 178 84% 10%;
+    --sidebar-border: 178 84% 15%;
+    --sidebar-ring: 174 84% 31%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    letter-spacing: var(--tracking-normal);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
