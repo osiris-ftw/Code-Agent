@@ -130,12 +130,30 @@ router.post('/run', async (req, res) => {
 
   // Write code to a temp directory
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'cloudcodex-'))
+  try {
+    // Some language images run as non-root users; make mounted directory traversable.
+    fs.chmodSync(tmpDir, 0o755)
+  } catch {
+    // Ignore chmod failures on unsupported environments.
+  }
+
   const filePath = path.join(tmpDir, config.filename)
   fs.writeFileSync(filePath, code, 'utf-8')
+  try {
+    fs.chmodSync(filePath, 0o644)
+  } catch {
+    // Ignore chmod failures on unsupported environments.
+  }
 
   // Write stdin to file if provided
   if (stdin) {
-    fs.writeFileSync(path.join(tmpDir, 'stdin.txt'), stdin, 'utf-8')
+    const stdinPath = path.join(tmpDir, 'stdin.txt')
+    fs.writeFileSync(stdinPath, stdin, 'utf-8')
+    try {
+      fs.chmodSync(stdinPath, 0o644)
+    } catch {
+      // Ignore chmod failures on unsupported environments.
+    }
   }
 
   const dockerAvailable = isDockerRunning()
