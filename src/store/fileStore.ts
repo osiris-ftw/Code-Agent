@@ -1,6 +1,5 @@
 import { create } from 'zustand'
-
-const API_URL = 'http://localhost:3001'
+import { API_URL } from '../lib/config'
 
 export interface File {
   id: string

@@ -31,8 +31,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from '../components/ui/dropdown-menu'
-
-const API_URL = 'http://localhost:3001'
+import { API_URL } from '../lib/config'
 
 export function EditorPage() {
   const { files, activeFileId, updateFileContent, loadFiles, loaded } = useFileStore()
@@ -53,6 +52,8 @@ export function EditorPage() {
 
   // Settings dialog state
   const [settingsOpen, setSettingsOpen] = useState(false)
+
+  const backendLabel = API_URL.replace(/^https?:\/\//, '')
 
   // Load files from DB on mount
   useEffect(() => {
@@ -366,7 +367,7 @@ export function EditorPage() {
               <h4 className="text-sm font-medium">AI Assistant</h4>
               <div className="text-xs text-muted-foreground space-y-1">
                 <p>• Model: Llama 3.3 70B (Groq)</p>
-                <p>• Backend: localhost:3001</p>
+                <p>• Backend: {backendLabel}</p>
               </div>
             </div>
           </div>

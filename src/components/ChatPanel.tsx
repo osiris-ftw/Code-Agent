@@ -10,8 +10,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { cn } from '../lib/utils'
 import { AGENT_SYSTEM_PROMPT } from '../lib/agent'
-
-const API_URL = 'http://localhost:3001'
+import { API_URL } from '../lib/config'
 
 interface ChatMessage {
   id: string

@@ -5,6 +5,7 @@ import '@xterm/xterm/css/xterm.css'
 import { useAuthStore } from '../store/authStore'
 import { Button } from './ui/button'
 import { Terminal as TerminalIcon, X, RotateCcw, ShieldCheck, ShieldAlert } from 'lucide-react'
+import { WS_URL } from '../lib/config'
 
 type SandboxStatus = 'connecting' | 'sandboxed' | 'unavailable' | 'error'
 
@@ -78,8 +79,8 @@ export function XTerminalPanel({ onClose, tabSwitcher }: XTerminalPanelProps) {
 
     // Connect WebSocket with JWT token
     const wsUrl = token
-      ? `ws://localhost:3001/ws/terminal?token=${encodeURIComponent(token)}`
-      : `ws://localhost:3001/ws/terminal`
+      ? `${WS_URL}/ws/terminal?token=${encodeURIComponent(token)}`
+      : `${WS_URL}/ws/terminal`
     const ws = new WebSocket(wsUrl)
     wsRef.current = ws
 

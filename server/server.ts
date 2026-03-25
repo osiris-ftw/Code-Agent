@@ -14,6 +14,7 @@ app.use(cors())
 app.use(express.json({ limit: '5mb' }))
 
 const PORT = 3001
+const SERVER_HOST = process.env.SERVER_HOST || '0.0.0.0'
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions'
 const JWT_SECRET = process.env.JWT_SECRET || 'cloudcodex-secret-key-change-in-production'
 
@@ -234,7 +235,7 @@ app.get('/api/health', (_req, res) => {
 // isDockerRunning is imported from executeRoutes
 
 const server = app.listen(PORT, () => {
-  console.log(`\n CodeAgent Server running on http://localhost:${PORT}`)
+  console.log(`\n CodeAgent Server running on http://${SERVER_HOST}:${PORT}`)
   console.log(`   Auth:     POST /api/auth/register, /api/auth/login`)
   console.log(`   AI Chat:  POST /api/chat  (Groq)`)
   console.log(`   Execute: POST /api/run`)
