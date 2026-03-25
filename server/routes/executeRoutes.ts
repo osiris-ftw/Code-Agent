@@ -8,7 +8,7 @@ const router = Router()
 
 // ─── Language → config mapping ───────────────────────────────────────
 interface LangConfig {
-  image: string
+  images: string[]
   filename: string
   runCmd: (file: string) => string
   localCmd?: (file: string) => string
@@ -16,77 +16,93 @@ interface LangConfig {
 
 const LANG_MAP: Record<string, LangConfig> = {
   python: {
-    image: 'cloudcodex-python',
+    images: ['cloudcodex-python', 'code-agent-python'],
     filename: 'code.py',
     runCmd: (f) => `python3 ${f}`,
-    localCmd: (f) => `python ${f}`,
+    localCmd: (f) => (process.platform === 'win32' ? `python ${f}` : `python3 ${f}`),
   },
   javascript: {
-    image: 'cloudcodex-javascript',
+    images: ['cloudcodex-javascript', 'code-agent-javascript'],
     filename: 'code.js',
     runCmd: (f) => `node ${f}`,
     localCmd: (f) => `node ${f}`,
   },
   typescript: {
-    image: 'cloudcodex-javascript',
+    images: ['cloudcodex-javascript', 'code-agent-javascript'],
     filename: 'code.ts',
     runCmd: (f) => `tsx ${f}`,
     localCmd: (f) => `npx tsx ${f}`,
   },
   java: {
-    image: 'cloudcodex-java',
+    images: ['cloudcodex-java', 'code-agent-java'],
     filename: 'Main.java',
     runCmd: () => `javac Main.java && java Main`,
     localCmd: (f) => `javac ${f} && java Main`,
   },
   c: {
-    image: 'cloudcodex-c-cpp',
+    images: ['cloudcodex-c-cpp', 'code-agent-c-cpp'],
     filename: 'code.c',
     runCmd: (f) => `gcc ${f} -o code -lm && ./code`,
     localCmd: (f) => `gcc ${f} -o code.exe -lm && code.exe`,
   },
   cpp: {
-    image: 'cloudcodex-c-cpp',
+    images: ['cloudcodex-c-cpp', 'code-agent-c-cpp'],
     filename: 'code.cpp',
     runCmd: (f) => `g++ ${f} -o code && ./code`,
     localCmd: (f) => `g++ ${f} -o code.exe && code.exe`,
   },
   go: {
-    image: 'cloudcodex-go',
+    images: ['cloudcodex-go', 'code-agent-go'],
     filename: 'code.go',
     runCmd: (f) => `go run ${f}`,
     localCmd: (f) => `go run ${f}`,
   },
   rust: {
-    image: 'cloudcodex-rust',
+    images: ['cloudcodex-rust', 'code-agent-rust'],
     filename: 'code.rs',
     runCmd: (f) => `rustc ${f} -o code && ./code`,
     localCmd: (f) => `rustc ${f} -o code.exe && code.exe`,
   },
   php: {
-    image: 'cloudcodex-php',
+    images: ['cloudcodex-php', 'code-agent-php'],
     filename: 'code.php',
     runCmd: (f) => `php ${f}`,
     localCmd: (f) => `php ${f}`,
   },
   ruby: {
-    image: 'cloudcodex-ruby',
+    images: ['cloudcodex-ruby', 'code-agent-ruby'],
     filename: 'code.rb',
     runCmd: (f) => `ruby ${f}`,
     localCmd: (f) => `ruby ${f}`,
   },
   bash: {
-    image: 'cloudcodex-bash',
+    images: ['cloudcodex-bash', 'code-agent-bash'],
     filename: 'code.sh',
     runCmd: (f) => `bash ${f}`,
     localCmd: (f) => `bash ${f}`,
   },
   plaintext: {
-    image: 'cloudcodex-bash',
+    images: ['cloudcodex-bash', 'code-agent-bash'],
     filename: 'code.sh',
     runCmd: (f) => `bash ${f}`,
     localCmd: (f) => `bash ${f}`,
   },
+}
+
+function resolveAvailableImage(images: string[]): string | null {
+  for (const image of images) {
+    try {
+      const result = execSync(`docker images -q ${image}`, {
+        encoding: 'utf-8',
+        stdio: ['pipe', 'pipe', 'pipe'],
+      }).trim()
+      if (result.length > 0) return image
+    } catch {
+      // Continue checking candidate tags.
+    }
+  }
+
+  return null
 }
 
 // ─── Docker availability check ──────────────────────────────────────
@@ -123,11 +139,12 @@ router.post('/run', async (req, res) => {
   }
 
   const dockerAvailable = isDockerRunning()
+  const dockerImage = dockerAvailable ? resolveAvailableImage(config.images) : null
 
   try {
     let result: string
 
-    if (dockerAvailable) {
+    if (dockerAvailable && dockerImage) {
       // ── Docker execution using execFileSync (array args, no shell quoting issues) ──
       const runCommand = config.runCmd(config.filename)
       const stdinRedirect = stdin ? ` < /code/stdin.txt` : ''
@@ -141,7 +158,7 @@ router.post('/run', async (req, res) => {
         '--pids-limit=64',
         '-v', `${tmpDir}:/code`,
         '-w', '/code',
-        config.image,
+        dockerImage,
         'sh', '-c', shellCmd,
       ]
 

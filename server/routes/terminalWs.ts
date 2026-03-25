@@ -5,7 +5,7 @@ import * as pty from 'node-pty'
 import jwt from 'jsonwebtoken'
 import { URL } from 'url'
 
-const TERMINAL_IMAGE = 'cloudcodex-terminal'
+const TERMINAL_IMAGES = ['cloudcodex-terminal', 'code-agent-terminal']
 
 // ─── Check if Docker is available and image exists ──────────────────
 function isDockerAvailable(): boolean {
@@ -17,23 +17,28 @@ function isDockerAvailable(): boolean {
   }
 }
 
-function isTerminalImageBuilt(): boolean {
-  try {
-    const result = execSync(`docker images -q ${TERMINAL_IMAGE}`, {
-      encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'pipe'],
-    }).trim()
-    return result.length > 0
-  } catch {
-    return false
+function getAvailableTerminalImage(): string | null {
+  for (const image of TERMINAL_IMAGES) {
+    try {
+      const result = execSync(`docker images -q ${image}`, {
+        encoding: 'utf-8',
+        stdio: ['pipe', 'pipe', 'pipe'],
+      }).trim()
+      if (result.length > 0) return image
+    } catch {
+      // Try next candidate image tag.
+    }
   }
+
+  return null
 }
 
 // ─── Sandboxed Docker terminal via node-pty ──────────────────────────
 function spawnDockerTerminal(
   ws: WebSocket,
   cols: number,
-  rows: number
+  rows: number,
+  image: string
 ): pty.IPty {
   const containerName = `codex-term-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`
 
@@ -46,7 +51,7 @@ function spawnDockerTerminal(
     '--memory=512m',
     '--cpus=1',
     '--pids-limit=128',
-    TERMINAL_IMAGE,
+    image,
     'bash',
   ]
 
@@ -143,7 +148,9 @@ export function setupTerminalWebSocket(server: Server, jwtSecret: string) {
   })
 
   wss.on('connection', (ws: WebSocket) => {
-    const dockerReady = isDockerAvailable() && isTerminalImageBuilt()
+    const dockerAvailable = isDockerAvailable()
+    const terminalImage = dockerAvailable ? getAvailableTerminalImage() : null
+    const dockerReady = dockerAvailable && !!terminalImage
 
     if (!dockerReady) {
       // ── Refuse connection — no unsandboxed fallback ──
@@ -156,7 +163,8 @@ export function setupTerminalWebSocket(server: Server, jwtSecret: string) {
           '\x1b[33mDocker is not running or the terminal image is not built.\x1b[0m\r\n',
           '\x1b[33mTo fix this:\x1b[0m\r\n',
           '\x1b[90m  1. Start Docker Desktop\x1b[0m\r\n',
-          '\x1b[90m  2. Run:  cd docker && docker build -t cloudcodex-terminal ./languages/terminal\x1b[0m\r\n',
+          '\x1b[90m  2. Run: cd docker && docker build -t cloudcodex-terminal ./languages/terminal\x1b[0m\r\n',
+          '\x1b[90m     (or tag as code-agent-terminal)\x1b[0m\r\n',
           '\r\n',
           '\x1b[31mLocal shell fallback is disabled for security.\x1b[0m\r\n',
         ].join(''),
@@ -172,7 +180,7 @@ export function setupTerminalWebSocket(server: Server, jwtSecret: string) {
     }))
 
     try {
-      spawnDockerTerminal(ws, 80, 24)
+      spawnDockerTerminal(ws, 80, 24, terminalImage!)
     } catch (err: any) {
       console.error('  ❌ Failed to spawn sandboxed terminal:', err.message)
       ws.send(JSON.stringify({
