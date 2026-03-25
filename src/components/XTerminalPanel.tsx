@@ -77,10 +77,12 @@ export function XTerminalPanel({ onClose, tabSwitcher }: XTerminalPanelProps) {
     xtermRef.current = term
     fitRef.current = fit
 
-    // Connect WebSocket with JWT token
+    // Normalize base in case WS_URL already includes /ws or /ws/terminal.
+    const wsBase = WS_URL.replace(/\/(ws(?:\/terminal)?)$/i, '')
+    const endpoint = `${wsBase}/ws/terminal`
     const wsUrl = token
-      ? `${WS_URL}/ws/terminal?token=${encodeURIComponent(token)}`
-      : `${WS_URL}/ws/terminal`
+      ? `${endpoint}?token=${encodeURIComponent(token)}`
+      : endpoint
     const ws = new WebSocket(wsUrl)
     wsRef.current = ws
 
