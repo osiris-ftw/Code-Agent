@@ -1,59 +1,39 @@
-# Enhanced Vite React TypeScript Template
+# Code Agent
 
-This template includes built-in detection for missing CSS variables between your Tailwind config and CSS files.
+## Overview
+The Code Agent project is a sophisticated coding assistant designed to streamline your programming tasks. This application utilizes various technologies to provide features that enhance productivity and code quality.
+
+## Technologies Used
+- **TypeScript**: Utilizes static types to increase code reliability and maintainability.
+- **JavaScript**: Core scripting language that powers the logic of the application.
+- **CSS**: Styling language that enhances the user interface.
+- **Shell**: Used for scripting and automating tasks within the application.
+- **Dockerfile**: Containerization support for easier deployment and environment management.
+- **PowerShell**: Automation and configuration management for Windows environments.
+- **HTML**: Markup language that structures the content displayed in the user interface.
 
 ## Features
+- Code suggestions based on user input.
+- Syntax highlighting and formatting for multiple languages.
+- Integrated development environment (IDE) features to enhance coding efficiency.
+- Customizable settings for individual developers' needs.
 
-- **CSS Variable Detection**: Automatically detects if CSS variables referenced in `tailwind.config.cjs` are defined in `src/index.css`
-- **Enhanced Linting**: Includes ESLint, Stylelint, and custom CSS variable validation
-- **Shadcn/ui**: Pre-configured with all Shadcn components
-- **Modern Stack**: Vite + React + TypeScript + Tailwind CSS
+## Getting Started
+To get started with the Code Agent project:
+1. Clone the repository: `git clone https://github.com/osiris-ftw/Code-Agent.git`
+2. Navigate into the project directory: `cd Code-Agent`
+3. Install dependencies: `npm install`
+4. Start the application: `npm start`
 
-## Available Scripts
+## Contributing
+We welcome contributions! Please follow the standard procedure for contributing to open-source projects:
+- Fork the repository
+- Create a new branch (e.g., `feature/your-feature`)
+- Make your changes
+- Submit a pull request
 
-```bash
-# Run all linting (includes CSS variable check)
-npm run lint
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-# Check only CSS variables
-npm run check:css-vars
-
-# Individual linting
-npm run lint:js    # ESLint
-npm run lint:css   # Stylelint
-```
-
-## CSS Variable Detection
-
-The template includes a custom script that:
-
-1. **Parses `tailwind.config.cjs`** to find all `var(--variable)` references
-2. **Parses `src/index.css`** to find all defined CSS variables (`--variable:`)
-3. **Cross-references** them to find missing definitions
-4. **Reports undefined variables** with clear error messages
-
-### Example Output
-
-When CSS variables are missing:
-```
-❌ Undefined CSS variables found in tailwind.config.cjs:
-   --sidebar-background
-   --sidebar-foreground
-   --sidebar-primary
-
-Add these variables to src/index.css
-```
-
-When all variables are defined:
-```
-✅ All CSS variables in tailwind.config.cjs are defined
-```
-
-## How It Works
-
-The detection happens during the `npm run lint` command, which will:
-- Exit with error code 1 if undefined variables are found
-- Show exactly which variables need to be added to your CSS file
-- Integrate seamlessly with your development workflow
-
-This prevents runtime CSS issues where Tailwind classes reference undefined CSS variables.
+## Acknowledgments
+Thanks to the community for their contributions and support.
