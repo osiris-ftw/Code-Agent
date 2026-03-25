@@ -43,13 +43,13 @@ const LANG_MAP: Record<string, LangConfig> = {
     images: ['cloudcodex-c-cpp', 'code-agent-c-cpp'],
     filename: 'code.c',
     runCmd: (f) => `gcc ${f} -o code -lm && ./code`,
-    localCmd: (f) => `gcc ${f} -o code.exe -lm && code.exe`,
+    localCmd: (f) => (process.platform === 'win32' ? `gcc ${f} -o code.exe -lm && code.exe` : `gcc ${f} -o code -lm && ./code`),
   },
   cpp: {
     images: ['cloudcodex-c-cpp', 'code-agent-c-cpp'],
     filename: 'code.cpp',
     runCmd: (f) => `g++ ${f} -o code && ./code`,
-    localCmd: (f) => `g++ ${f} -o code.exe && code.exe`,
+    localCmd: (f) => (process.platform === 'win32' ? `g++ ${f} -o code.exe && code.exe` : `g++ ${f} -o code && ./code`),
   },
   go: {
     images: ['cloudcodex-go', 'code-agent-go'],
@@ -61,7 +61,7 @@ const LANG_MAP: Record<string, LangConfig> = {
     images: ['cloudcodex-rust', 'code-agent-rust'],
     filename: 'code.rs',
     runCmd: (f) => `rustc ${f} -o code && ./code`,
-    localCmd: (f) => `rustc ${f} -o code.exe && code.exe`,
+    localCmd: (f) => (process.platform === 'win32' ? `rustc ${f} -o code.exe && code.exe` : `rustc ${f} -o code && ./code`),
   },
   php: {
     images: ['cloudcodex-php', 'code-agent-php'],
